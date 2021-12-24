@@ -1,6 +1,7 @@
 import open3d as o3d
 import numpy as np
 
+
 def draw_geometries(pcds):
     """
     Draw Geometries
@@ -9,14 +10,16 @@ def draw_geometries(pcds):
     """
     o3d.visualization.draw_geometries(pcds)
 
-def get_o3d_FOR(origin=[0, 0, 0],size=10):
+
+def get_o3d_FOR(origin=[0, 0, 0], size=10):
     """
     Create a FOR that can be added to the open3d point cloud
     """
     mesh_frame = o3d.geometry.TriangleMesh.create_coordinate_frame(
-    size=size)
+        size=size)
     mesh_frame.translate(origin)
-    return(mesh_frame)
+    return (mesh_frame)
+
 
 def vector_magnitude(vec):
     """
@@ -24,8 +27,8 @@ def vector_magnitude(vec):
     Args:
         - vec ():
     """
-    magnitude = np.sqrt(np.sum(vec**2))
-    return(magnitude)
+    magnitude = np.sqrt(np.sum(vec ** 2))
+    return (magnitude)
 
 
 def calculate_zy_rotation_for_arrow(vec):
@@ -43,33 +46,35 @@ def calculate_zy_rotation_for_arrow(vec):
         - vec ():
     """
     # Rotation over z axis of the FOR
-    gamma = np.arctan(vec[1]/vec[0])
-    Rz = np.array([[np.cos(gamma),-np.sin(gamma),0],
-                   [np.sin(gamma),np.cos(gamma),0],
-                   [0,0,1]])
+    gamma = np.arctan(vec[1] / vec[0])
+    Rz = np.array([[np.cos(gamma), -np.sin(gamma), 0],
+                   [np.sin(gamma), np.cos(gamma), 0],
+                   [0, 0, 1]])
     # Rotate vec to calculate next rotation
-    vec = Rz.T@vec.reshape(-1,1)
+    vec = Rz.T @ vec.reshape(-1, 1)
     vec = vec.reshape(-1)
     # Rotation over y axis of the FOR
-    beta = np.arctan(vec[0]/vec[2])
-    Ry = np.array([[np.cos(beta),0,np.sin(beta)],
-                   [0,1,0],
-                   [-np.sin(beta),0,np.cos(beta)]])
-    return(Rz, Ry)
+    beta = np.arctan(vec[0] / vec[2])
+    Ry = np.array([[np.cos(beta), 0, np.sin(beta)],
+                   [0, 1, 0],
+                   [-np.sin(beta), 0, np.cos(beta)]])
+    return (Rz, Ry)
+
 
 def create_arrow(scale=10):
     """
     Create an arrow in for Open3D
     """
-    cone_height = scale*0.2
-    cylinder_height = scale*0.8
-    cone_radius = scale/10
-    cylinder_radius = scale/20
+    cone_height = scale * 0.2
+    cylinder_height = scale * 0.8
+    cone_radius = scale / 10
+    cylinder_radius = scale / 20
     mesh_frame = o3d.geometry.TriangleMesh.create_arrow(cone_radius=1,
-        cone_height=cone_height,
-        cylinder_radius=0.5,
-        cylinder_height=cylinder_height)
-    return(mesh_frame)
+                                                        cone_height=cone_height,
+                                                        cylinder_radius=0.5,
+                                                        cylinder_height=cylinder_height)
+    return (mesh_frame)
+
 
 def get_arrow(origin=[0, 0, 0], end=None, vec=None):
     """
@@ -95,7 +100,7 @@ def get_arrow(origin=[0, 0, 0], end=None, vec=None):
     mesh.rotate(Ry, center=np.array([0, 0, 0]))
     mesh.rotate(Rz, center=np.array([0, 0, 0]))
     mesh.translate(origin)
-    return(mesh)
+    return (mesh)
 
 
 # Create a Cartesian Frame of Reference
@@ -110,4 +115,4 @@ FOR = get_o3d_FOR()
 arrow = get_arrow()
 
 # Draw everything
-draw_geometries([FOR,arrow])
+draw_geometries([FOR, arrow])
